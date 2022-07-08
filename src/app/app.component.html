@@ -1,0 +1,218 @@
+<div class="container " style="padding: 44px 0px 30px 0px;">
+    <div class="row">
+        <div class="col title">
+            <div>
+                <h2>Receba seus pagamentos com PIX - QR Code</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm">
+            <div>
+
+                <div class="container">
+                    <div class="row box-info">
+                        <div class="col divider-01">
+                            <div>
+                                Crie um (ou vários) QRCodes Pix ou outros para compartilhe com seus amigos e clientes. Onde poderão ver com detalhes da fatura, em um QR Code para pagamento além do código "Pix Copia e Cola". Copie e cole um link para gerar direcionamento através de um
+                                QRCode.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row box-info">
+                        <div class="col divider-01">
+                            <div>
+                                Atenção: a Chave Pix deve ser cadastrada diretamente no aplicativo do seu banco.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container box-inf-pix">
+                    <div class="row">
+                        <div class="col">
+                            <div>Selecione tipo de formulário</div>
+                            <mat-form-field>
+                                <mat-select name="tipo_formulario" [(ngModel)]="selectedTipoForm" (ngModelChange)="selectedTipoFormulario($event)" [value]="selectedTipoForm">
+                                    <mat-option value="pix">QR CODE PIX</mat-option>
+                                    <mat-option value="link">QR CODE LINK</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+
+                <form [formGroup]="linkQrcodeForm" class="example-form" *ngIf="isLinkQrCodeForm">
+                    <div class="container box-inf-pix">
+                        <div class="row">
+                            <div class="col">
+                                <div>Link</div>
+                                <input id="link" class="form-control" type="text" placeholder="Link" formControlName="link">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col" style="text-align: right; padding: 15px 12px 1px 12px;">
+                                <button type="button" class="btn btn-primary" (click)="gerarQrCodeLink()">Gerar</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <form [formGroup]="pixQrcodeForm" class="example-form" *ngIf="isPixQrCodeForm">
+                    <div class="container box-inf-pix">
+                        <div class="row">
+                            <div class="col-sm">
+                                <div>Selecione tipo</div>
+                                <mat-form-field>
+                                    <mat-select formControlName="tipo_chave" name="tipo_chave" (ngModelChange)="selectedTipo($event, pixQrcodeForm.chave)">
+                                        <mat-option value="CPF" selected>CPF</mat-option>
+                                        <mat-option value="CNPJ" >CNPJ</mat-option>
+                                        <mat-option value="TEL">Tel</mat-option>
+                                        <mat-option value="EMAIL">E-mail</mat-option>
+                                        <mat-option value="OUTRO">Outro</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-sm">
+                                <div *ngIf="tipoChaveSelected === 'CNPJ'">
+                                    <div>Chave</div>
+                                    <input id="cnpj" class="form-control" type="text" placeholder="CNPJ" mask="900.000.000/0000-00" formControlName="cnpj">
+                                </div>
+                                <div *ngIf="tipoChaveSelected === 'CPF'">
+                                    <div>Chave</div>
+                                    <input id="cpf" class="form-control" type="text" placeholder="CPF" mask="000.000.000-00" formControlName="cpf">
+                                </div>
+                                <div *ngIf="tipoChaveSelected === 'TEL'">
+                                    <div>Telefone</div>
+                                    <input id="tel" class="form-control" type="text" placeholder="Telefone" mask="(00) 0 0000-0000" formControlName="tel">
+                                </div>
+                                <div *ngIf="tipoChaveSelected === 'EMAIL'">
+                                    <div>E-mail</div>
+                                    <input id="email" class="form-control" type="email" placeholder="E-mail" formControlName="email">
+                                </div>
+                                <div *ngIf="tipoChaveSelected === 'OUTRO'">
+                                    <div>Outro</div>
+                                    <input id="outro" class="form-control" type="text" placeholder="Outro" formControlName="outro">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm">
+                                <div>Nome</div>
+                                <input id="nome" class="form-control" type="text" placeholder="Nome" formControlName="nome">
+                            </div>
+                            <div class="col-sm">
+                                <div>Descrição</div>
+                                <input id="desc" class="form-control" type="text" placeholder="Descrição" formControlName="desc">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm">
+                                <div>CEP</div>
+                                <input id="cep" class="form-control" type="text" placeholder="CEP" formControlName="cep">
+                            </div>
+                            <div class="col-sm">
+                                <div>Cidade</div>
+                                <input id="cidade" class="form-control" type="text" placeholder="Cidade" formControlName="cidade">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm" style="text-align: right; padding: 15px 12px 1px 12px;">
+                                <button type="button" class="btn btn-primary" (click)="gerarQrCodePix()">Gerar</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="container  box-inf-pix">
+                    <div class="row">
+                        <div class="col" style="text-align: center;">
+                            <div>
+                                <img id="idQrCodeImg" [src]="imgBase64" class="img01" />
+                                <div>
+                                    <button class="btn-dw-qr" (click)="downloadQrCode()">Download<i style="left: 8px;position: relative;" class="fas fa-download"></i></button>
+                                </div>
+                            </div>
+                            <div style="margin-top: 20px;display: flex;">
+                                <input id="selectedLink" type="text" class="form-control" style="font-size: 8px;" value="{{selectedLinkQrCode}}" />
+                                <button class="btn-copy-lynk"><i class="far fa-copy" (click)="copyLink()"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="col col-l1">
+            <div>
+                <div>
+                    <h4 class="d-flex justify-content-between align-items-center mb-3">
+                        <span>Funcionalidades</span>
+                        <span class="badge badge-secondary badge-pill"><i class="fas fa-cogs"></i></span>
+                    </h4>
+                </div>
+                <div>
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between lh-condensed">
+                            <div>
+                                <h6 class="my-0">Geração de QR Code</h6>
+                                <small class="text-muted">Conforme documentação Pix</small>
+                            </div>
+                            <span class="text-pix text-center" style="width:20px"><i class="fas fa-qrcode"></i></span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between lh-condensed">
+                            <div>
+                                <h6 class="my-0">Página de pagamento</h6>
+                                <small class="text-muted">Pix QR Code e "Pix Copia e Cola"</small>
+                            </div>
+                            <span class="text-pix text-center" style="width:20px"><i class="fas fa-clipboard"></i></span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between lh-condensed">
+                            <div>
+                                <h6 class="my-0">Consumo via API</h6>
+                                <small class="text-muted">Entre em contato</small>
+                            </div>
+                            <span class="text-pix text-center" style="width:20px"><i class="fas fa-robot"></i></span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between lh-condensed">
+                            <div>
+                                <h6 class="my-0">Faturas com sua marca</h6>
+                                <small class="text-muted">Entre em contato</small>
+                            </div>
+                            <span class="text-pix text-center" style="width:20px"><i class="fas fa-registered"></i></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div style="margin-top: 25px;">
+                <div>
+                    <h4 class="d-flex justify-content-between align-items-center mb-3">
+                        <span>Compartilhar</span>
+                        <span class="badge badge-secondary badge-pill"><i class="fas fa-share-alt"></i></span>
+                    </h4>
+                </div>
+                <div>
+                    <ul class="list-group">
+                        <li class="list-group-item lh-condensed">
+                            <button type="button" class="btn btn-light btn-whatsapp" (click)="compartilhar('whatsapp')"><i class="fab fa-whatsapp"></i></button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container " style="padding: 44px 0px 10px 0px;">
+    <div class="row">
+        <div class="col title-2">
+            <div>
+                Todos diretos reservados ao Analista - Alex Santos Rocha © 2021
+            </div>
+        </div>
+    </div>
+</div>
